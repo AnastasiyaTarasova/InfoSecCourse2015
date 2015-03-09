@@ -7,6 +7,19 @@
 \usepackage{graphics}
 \usepackage[pdftex]{graphicx}
 \usepackage{lscape}
+\usepackage{listings}
+\lstset{
+breaklines=true, % Перенос длинных строк
+basicstyle=\ttfamily\footnotesize, % Шрифт для отображения кода
+frame=tblr % draw a frame at all sides of the code block
+tabsize=2, % tab space width
+showstringspaces=false, % don't mark spaces in strings
+% Настройка отображения номеров строк
+numbers=left, % Слева отображаются номера строк
+stepnumber=1, % Каждую строку нумеровать
+numbersep=5pt, % Отступ от кода
+}
+\renewcommand{\lstlistingname}{Листинг} 
 \author{Анастасия Тарасова}
 \title{Отчет по лабораторной работе №1 :\\ \LaTeX{}, Git, GPG}
 \begin{document}
@@ -147,9 +160,60 @@ GitHub это социальный репозиторий для проекто�
 \section{Cоздание электронных цифровых подписей c PGP}
 
 \subsection{Цель работы}
-
+Научиться создавать сертификаты, шифровать файлы и ставить ЭЦП.
 \subsection{Ход работы}
 
 \subsubsection{Знакомство с пакетом Kleopatra}
+Kleopatra это графический интерфейс к GnuPG и предназначенных для работы под
+окружением KDE и портированный на MS Windows (доступные в составе пакета Gpg4win).
+
+При помощи мастера, графический интерфейс позволяет создать сертификат. Его тексто-
+вый вид представлен в листинге 1.
+
+\lstinputlisting[language={},caption={Сертификат в формате asc (ASCII Armored file)}]{res/2BAB5748CC787C281EB0A47BDB40592A462DF9C0.asc}
+Имея свой сертификат, можно подписать любой имеющийся документ. Цифровая подпись сохраняется в отдельный файл с расширением sig. Если зашифровать файл \textit{report1.pdf}, то подпись будет сохранена в файле \textit{report1.pdf.sig} (см. рис. 5).
+
+Программа позволяет импортировать чужие сертификаты, и проверять подписи. На рисунке
+6 показан итог импорта чужого файла.
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{res/karina}
+\caption{Импорт чужого ключа в Kleopatra}
+\end{figure}
+\subsubsection{Использование gpg через интерфейс командной строки}
+
+Результат, полученный при помощи Kleopatra легко повторить используя терминал. Генерация ключа происходит в диалоговом режиме после ввода команды
+\begin{verbatim}gpg --gen-key
+\end{verbatim}
+В процессе работы, мастер создания ключа запросит следующую информацию:
+\begin{itemize}
+\item{Тип ключа (по умолчанию это DSA и ElGamal).}
+\item{Размер ключа (с DSA/ElGamal ключами не использую длину больше чем 2048).}
+\item{"срок годности" ключа.}
+\item{Информацию о пользователе (имя, электронный адрес).}
+\item{Пароль для ключа (если нужен).}
+\end{itemize}
+В процессе генерации ключа, GnuPG использует энтропию. Для способствования её сбору рекомендуется активно двигать мышкой или запустить mp3 в фоновом режиме.
+Просмотреть доступные в системе ключи позволяет команда
+\begin{verbatim}gpg --list-keys
+\end{verbatim}
+Её вывод показан ниже.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{res/gpgterminal}
+\caption{Список ключей в системе.}
+\end{figure}
+Для экспорта можно использовать команду (ключ определяется по электронному адресу)
+\begin{verbatim}gpg --armor --output john.asc --export john@mail.ru
+\end{verbatim}
+Для импорта используется
+\begin{verbatim}gpg --import tomas.asc
+\end{verbatim}
+\subsection{Выводы}
+Пакет Kleopatra имеет большое количество зависимостей, среди которых akonadi-backend-mysql, akonadi-server, dirmngr, docbook-xml, docbook-xsl, gnupg-agent, gnupg2, gpgsm, icoutils, kate-data, katepart, kde-runtime, kde-runtime-data, kdelibs-bin, kdelibs5-data, kdelibs5-plugins, kdepim-runtime, kdepimlibs-kio-plugins, kdoctools, kleopatra, kubuntu-debug-installer, libaccounts-qt1, libakonadi-calendar4, libakonadi-contact4, libakonadi-kabc4, libakonadi-kcal4, libakonadi-kde4, libakonadi-kmime4, libakonadi-notes4, libakonadi-socialutils4, libakonadiprotocolinternals1, libattica0.4, libbaloocore4, libbaloofiles4, libbaloopim4, libbalooxapian4, libboost-program-options1.54.0, libcalendarsupport4, libdlrestrictions1, libdmtx0a, libepub0, libgpgme++2, libgrantlee-core0, libgrantlee-gui0, libincidenceeditorsng4, libkabc4, libkactivities-bin, libkactivities-models1, libkactivities6, libkalarmcal2, libkatepartinterfaces4, libkcal4, libkcalcore4, libkcalutils4, libkcmutils4, libkde3support4, libkdeclarative5, libkdecore5, libkdepim4, libkdepimdbusinterfaces4, libkdesu5, libkdeui5, libkdewebkit5, libkdgantt2-0, libkdnssd4, libkemoticons4, libkfbapi1, libkfile4, libkgapi2-2, libkholidays4, libkhtml5, libkidletime4, libkimap4, libkio5, libkjsapi4, libkjsembed4, libkldap4, libkleo4, libkmbox4, libkmediaplayer4, libkmime4, libknewstuff3-4, libknotifyconfig4, libkntlm4, libkolab0, libkolabxml1, libkparts4, libkpgp4, libkpimidentities4, libkpimtextedit4, libkpimutils4, libkprintutils4, libkpty4, libkresources4, libkrosscore4, libksba8, libktexteditor4, libktnef4, libkubuntu0, libkxmlrpcclient4, libmailcommon4, libmailimporter4, libmailtransport4, libmessagecomposer4, libmessagecore4, libmessageviewer4, libmicroblog4, libmysqlclient18, libnepomuk4, libnepomukcleaner4, libnepomukcore4abi1, libnepomukquery4a, libnepomukutils4, libntrack-qt4-1, libntrack0, libphonon4, libpimcommon4, libplasma3, libpolkit-qt-1-1, libprison0, libpth20, libqapt2, libqapt2-runtime, libqca2, libqgpgme1, libqjson0, libqmobipocket1, libqrencode3, libqt4-qt3support, libqt4-sql-mysql, libsendlater4, libsignon-qt1, libsolid4, libsoprano4, libstreamanalyzer0, libstreams0, libtemplateparser4, libthreadweaver4, libvirtodbc0, libxerces-c3.1, libxml2-utils, libzip2, mysql-client-core-5.5, mysql-server-core-5.5, nepomuk-core-data, nepomuk-core-runtime, ntrack-module-libnl-0, odbcinst, odbcinst1debian2, oxygen-icon-theme, phonon, phonon-backend-gstreamer, phonon-backend-gstreamer-common, phonon-backend-gstreamer1.0, pinentry-gtk2, pinentry-qt4, plasma-scriptengine-javascript, qapt-batch, scdaemon, sgml-data, shared-desktop-ontologies, soprano-daemon, ttf-dejavu-core, virtuoso-minimal, virtuoso-opensource-6.1-bin, virtuoso-opensource-6.1-common. В общей сложности, эти пакеты требуют порядка 300 мегабайт, что делает использование интерфейса командной строки более предпочтительным вариантом.
+
+
 
 \end{document}
