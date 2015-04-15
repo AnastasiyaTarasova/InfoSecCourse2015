@@ -1,0 +1,14 @@
+
+Starting Nmap 6.47 ( http://nmap.org ) at 2015-04-26 19:33 EDT
+Nmap scan report for 10.200.38.134
+Host is up (0.00078s latency).
+Not shown: 997 filtered ports
+PORT     STATE SERVICE   VERSION
+2869/tcp open  http      Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+3306/tcp open  mysql     MySQL (unauthorized)
+9090/tcp open  MyService
+MAC Address: EA:9A:8F:71:FA:E2 (Unknown)
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 38.90 seconds
