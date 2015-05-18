@@ -5,20 +5,21 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphics}
+\usepackage{placeins}
 \usepackage[pdftex]{graphicx}
 \usepackage{lscape}
 \usepackage{listings}
 \author{Анастасия Тарасова}
-\title{Отчет по лабораторной работе №2 :\\ Утилита для исследования сети и сканер
-портов Nmap}
+\title{Отчет по лабораторной работе №2 :\\ Утилита для исследования сети и сканер портов Nmap, Инструмент тестов на проникновение Metasploit}
 \begin{document}
 \maketitle
-\section{Цель работы}
+\section{Утилита для исследования сети и сканер портов Nmap}
+\subsection{Цель работы}
 Изчение \textbf{nmap} - свободной утилиты, предназначенной для разнообразного настраиваемого сканирования IP-сетей с любым количеством объектов, определения состояния объектов сканируемой сети (портов и соответствующих им служб).
-\section{Ход работы}
+\subsection{Ход работы}
 Определить набор и версии сервисов запущенных на компьютере в диапазоне адресов.
 
-\subsection{Поиск активных хостов}
+\subsubsection{Поиск активных хостов}
 
 \verb+db_nmap -sN 100.0.0/24+ - поиск активных хостов\\
 
@@ -63,7 +64,7 @@ Nmap done: 256 IP addresses (2 hosts up) scanned in 31.31 seconds
 
 \end{lstlisting}
 \newpage
-\subsection{Определить открытые порты}
+\subsubsection{Определить открытые порты}
 
 \verb+db_nmap -sS 100.0.0/24+ - просмотр активных портов\\
 
@@ -107,7 +108,7 @@ All 1000 scanned ports on 100.0.0.23 are closed
 Nmap done: 256 IP addresses (2 hosts up) scanned in 29.82 seconds
 \end{lstlisting}
 \newpage
-\subsection{Определить версии сервисов}
+\subsubsection{Определить версии сервисов}
 \verb+db_nmap -sV 100.0.0/24+ - показать версии сервисов\\
 
 \textbf{Вывод:}
@@ -164,9 +165,9 @@ at http://nmap.org/submit/ .
 Nmap done: 256 IP addresses (2 hosts up) scanned in 39.96 seconds
 \end{lstlisting}
 \newpage
-\subsection{Изучить файлы nmap-services, nmap-os-db, nmap-service-probes}
+\subsubsection{Изучить файлы nmap-services, nmap-os-db, nmap-service-probes}
 
-\subsubsection{nmap-service-probes}
+\textbf{nmap-service-probes}
 
 По аналогии с подсистемой определения ОС, Nmap использует
 простой текстовый файл для хранения тестов и сигнатур подсисте-
@@ -261,7 +262,7 @@ named», или «Apache httpd». Поле version содержит «номер
 тест службы.
 \end{itemize}
 
-\subsubsection{nmap-services}
+\textbf{nmap-services}
 
 Nmap, как известно, умеет делать много полезных вещей: это и
 определение операционной системы при помощи снятия отпечатков
@@ -281,7 +282,8 @@ Nmap, как известно, умеет делать много полезны
 Но не стоит забывать о том, что люди могут и ЗАПУСКАЮТ служ-
 бы, закрепляя их за весьма необычными портами.
 
-\subsubsection{nmap-os-db}
+\textbf{nmap-os-db}
+
 Одна из наиболее известных функциональных возможностей Nmap
 это удаленное определение ОС на основе анализа работы стека
 TCP/IP. Nmap посылает серию TCP и UDP пакетов на удаленный
@@ -298,7 +300,7 @@ Solaris), поколение ОС (напр. 10), и тип устройства
 classification which provides the vendor name (e.g. Sun), underlying
 OS (e.g. Solaris), OS generation (e.g. 10), and device type (для общих
 целей, роутер, коммутатор (switch), игровая консоль и т.д.).
-\subsection{Добавить новую сигнатуру службы в файл nmap-service-probes}
+\subsubsection{Добавить новую сигнатуру службы в файл nmap-service-probes}
 Запущен сервер. Его исходные файлы находятся в папке \verb+Programming\MinimalTCPServer+
 
 
@@ -361,20 +363,53 @@ Nmap done: 1 IP address (1 host up) scanned in 39.82 seconds
 
 \end{lstlisting}
 Видим, что имеется открытый порт 9090, сервис - MyService.
-\subsection{Сохранить вывод утилиты в формате xml}
+\subsubsection{Сохранить вывод утилиты в формате xml}
 \verb+nmap -sV 10.200.38.134 >output.xml+\\
 \verb+nmap 10.200.38.134 > output1.xml+\\
 Файлы output.xml и output1.xml хранятся в той же папке что и отчет.
 
-\subsection{Исследовать различные этапы и режимы работы nmap с использованием утилиты Wireshark}
+\subsubsection{Исследовать различные этапы и режимы работы nmap с использованием утилиты Wireshark}
+Wireshark - программа для анализа сетевых протоколов, которая широко используется для захвата сетевых пакетов. Программа распространяется бесплатно. 
 
-\verb+Просканировать виртуальную машину Metasploitable2 используя nmap_db +
+При переходе в Capture->Options увидим окно настройки программы, в поле интерфейс которого выбран адаптер eth0. Через него будет происходить захват пакетов.
 
+\FloatBarrier
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{res/wireshark}
+\caption{Capture Options}
+\end{figure}
+\FloatBarrier
+Запускаем Wireshark и сканируем виртуальную машину Metasploitable2.
+\verb+ nmap -sV -p 2049 192.168.0.1+
+
+Сделаем фильрацию захваченных пакетов по двум определенным IP адресам:
+
+\verb+ip.addr==192.168.0.1 and ip.addr==192.168.0.2+
+\FloatBarrier
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{res/scan1}
+\caption{Фильтрация захваченных пакетов по двум определенным IP-адресам. Определение сервиса на открытый порт 6667 }
+\end{figure}
+\FloatBarrier
+Отправляем SYN пакет, порт открыт, получаем SYN,ACK пакет, затем отправляем RST. Это значит что сканируемый порт открыт.
+\FloatBarrier
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.38]{res/scan2}
+\caption{Фильтрация захваченных пакетов по двум определенным IP-адресам. Определение сервиса на закрытый порт 2505 }
+\end{figure}
+\FloatBarrier
+Отправляем SYN пакет, порт открыт, получаем RST. Это значит что порт закрыт.
+Это 
 \verb+из состава metasploit-framework. Выбрать пять записей из файла+
 
 \verb+nmap-service-probes и описать их работу Выбрать один скрипт из +
 
 \verb+состава Nmap и описать его работу+
-\section{Выводы}
+\subsection{Выводы}
 Для поиска активных хостов испольховался ключ \textbf{-sN}, \textbf{--sS}
+\section{Инструмент тестов на проникновение Metasploit}
+\subsection{Ход работы}
 \end{document} 
